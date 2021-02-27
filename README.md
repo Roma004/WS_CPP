@@ -2,15 +2,18 @@
 
 ### Structure of the project:
 `main.cpp`         -- a single file wiht all the source code
+
 `test_client.html` -- Minimal testing frontend created using html and js
-`uSockets.a`       -- file needed for dynamical linking (https://github.com/uNetworking/uWebSockets) for more details (only for Linux users, If you use Windows, you have to install all the environment for yourself)
+
+`uSockets.a`       -- file needed for dynamical linking with uWebSockets - the main dependency of the project.
+
 `Makefile`         -- Linux building projects instructions
 
 ### Dependences:
 
-(https://github.com/uNetworking/uWebSockets) [uWebSockets]
+(uWebSockets)[https://github.com/uNetworking/uWebSockets]
 
-(https://github.com/nlohmann/json) [JSON for modern C++]
+(JSON for modern C++)[https://github.com/nlohmann/json]
 
 ### Building on Linux:
 
