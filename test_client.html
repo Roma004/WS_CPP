@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <script>  
+        window.addEventListener("load", function(evt) {
+
+            var addr = document.getElementById("addr");
+            var user_id = document.getElementById("user_id");
+            var recv_id = document.getElementById("recv_id");
+            var user_name = document.getElementById("user_name");
+            var user_password = document.getElementById("user_password");
+            var msg_field = document.getElementById("msg_field");
+
+            ws = new WebSocket("ws://" + addr.value + "/");
+
+            ws.onmessage = function(evt) {
+                message(evt);
+                // print_status("message", evt.data);
+            };
+            ws.onclose = function(evt) {ws = null;};
+            ws.onerror = function(evt) {
+                print_status("error", evt.data);
+            };
+
+            function print_status(channel, status) {
+                var d = document.createElement("div");
+                d.textContent = channel + " status:\n" + status;
+                document.getElementById("status").appendChild(d);
+            }
+
+            function print_chat(user, msg) {
+                var d = document.createElement("div");
+                d.textContent = "(" + user + "): " + msg;
+                document.getElementById("chat").appendChild(d); 
+            }
+
+            function register() {
+                var data = {
+                    "action": "reg",
+                    "user_name": user_name.value,
+                    "user_password": user_password.value
+                };
+                ws.send(JSON.stringify(data));
+            }
+
+            function authorise() {
+                var data = {
+                    "action": "auth",
+                    "id": Number(user_id.value),
+                    "user_password": user_password.value
+                };
+                ws.send(JSON.stringify(data));
+            }
+
+            function write_msg() {
+                var data = {
+                    "action": "msg",
+                    "recv_id": Number(recv_id.value),
+                    "message": msg_field.value,
+                    "msg_to_all": false
+                };
+                ws.send(JSON.stringify(data));
+                print_chat("from you", msg_field.value);
+            }
+
+            function message(evt) {
+                var data = JSON.parse(evt.data);
+
+                if (data["info"] == "msg_to_user") {
+                    print_chat("from " + data["author_id"]+"::"+data["author_name"], data["msg"]);
+                } else {
+                    print_status("action", JSON.stringify(data));
+                }
+            }
+
+            document.getElementById("reg").onclick = function(evt) {
+                register();
+                return false;
+            };
+
+            document.getElementById("auth").onclick = function(evt) {
+                authorise();
+                return false;
+            };
+
+            document.getElementById("send").onclick = function(evt) {
+                write_msg();
+                return false;
+            };
+
+        });
+        </script>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td valign="top" width="40%">
+                    <p>
+                    </p>
+                    <form>
+                        <p>
+                            <button id="reg">Register</button>
+                            <button id="auth">Authorise</button>
+                        </p>
+                        <p>
+                            <input id="addr" type="text" value="localhost:9001">
+                        </p>
+                        <p>
+                            <input id="user_id" type="text" value="ID: int">
+                            <input id="user_name" type="text" value="Name: str">
+                            <input id="user_password" type="text" value="passwd: str">
+                        </p>
+                        <p>
+                            <div id="status"></div>
+                        </p>
+                    </form>
+                </td>
+                <td valign="top" width="60%">
+                    <h3>
+                        <p>Chat Field </p>
+                        <p>
+                            <input id="msg_field" type="text" value="Write a message">
+                            <input id="recv_id" type="text" value="Receiver ID">
+                            <button id="send">SEND</button>
+                        </p>
+                        <p><div id="chat"></div></p>
+                    </h3>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
