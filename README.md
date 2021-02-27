@@ -11,9 +11,9 @@
 
 ### Dependences:
 
-(uWebSockets)[https://github.com/uNetworking/uWebSockets]
+[uWebSockets](https://github.com/uNetworking/uWebSockets)
 
-(JSON for modern C++)[https://github.com/nlohmann/json]
+[JSON for modern C++](https://github.com/nlohmann/json)
 
 ### Building on Linux:
 
